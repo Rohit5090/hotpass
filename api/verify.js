@@ -1,14 +1,18 @@
-const { providers } = require("near-api-js");
+import { providers } from "near-api-js";
 
-module.exports = async function (req, res) {
+export default async function handler(req, res) {
+  // 1. Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { transactionHash } = req.body;
+  const { transactionHash, accountId } = req.body;
 
-  if (!transactionHash) {
-    return res.status(400).json({ error: "Transaction hash required" });
+  // 2. Validation: NEAR RPC needs both the hash and the sender's account ID
+  if (!transactionHash || !accountId) {
+    return res.status(400).json({ 
+      error: "Both transactionHash and accountId are required." 
+    });
   }
 
   try {
@@ -16,18 +20,31 @@ module.exports = async function (req, res) {
       url: "https://rpc.testnet.near.org"
     });
 
-    const result = await provider.txStatus(
-      transactionHash,
-      "testnet"
-    );
+    // 3. Fetch transaction status
+    // provider.txStatus(hash, accountId) is the standard for near-api-js
+    const result = await provider.txStatus(transactionHash, accountId);
 
-    if (result && result.status && result.status.SuccessValue !== undefined) {
-      return res.status(200).json({ success: true, access: "granted" });
+    // 4. Robust Success Check
+    // SuccessValue can be an empty string "", so we check if the key exists
+    if (result && result.status && typeof result.status.SuccessValue === 'string') {
+      return res.status(200).json({ 
+        success: true, 
+        access: "granted" 
+      });
     }
 
-    return res.status(200).json({ success: false });
+    return res.status(200).json({ 
+      success: false, 
+      message: "Transaction is either failed or still processing." 
+    });
 
   } catch (error) {
-    return res.status(500).json({ error: "Verification failed" });
+    // Log the error for debugging
+    console.error("NEAR Verification Error:", error);
+    
+    return res.status(500).json({ 
+      error: "Verification failed", 
+      details: error.message 
+    });
   }
-};
+}
