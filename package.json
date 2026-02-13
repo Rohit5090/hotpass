@@ -1,16 +1,9 @@
 {
   "name": "hotpass",
   "version": "1.0.0",
-  "description": "HOTPass Near Payment Verification",
-  "main": "index.js",
   "type": "module",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "author": "",
-  "license": "ISC",
+  "private": true,
   "dependencies": {
-    "express": "^5.2.1",
     "near-api-js": "^7.1.0"
   }
 }
