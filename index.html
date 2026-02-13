@@ -1,38 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>HOTPass</title>
-</head>
-<body>
-
-<h1>HOTPass</h1>
-
-<input type="text" id="txHash" placeholder="Enter Transaction Hash">
-<button id="payBtn">Pay with HOT</button>
-
-<p id="result"></p>
-
 <script>
 document.getElementById("payBtn").addEventListener("click", async function() {
 
-    const hash = document.getElementById("txHash").value;
+  const hash = document.getElementById("txHash").value;
 
-    const response = await fetch("/verify-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transactionHash: hash })
-    });
+  const response = await fetch("/api/verify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      transactionHash: hash,
+      accountId: "testnet"
+    })
+  });
 
-    const data = await response.json();
+  const data = await response.json();
 
-    if (data.success) {
-        document.getElementById("result").innerText = "Access Granted ✅";
-    } else {
-        document.getElementById("result").innerText = "Access Denied ❌";
-    }
+  if (data.success) {
+    document.getElementById("result").innerText = "Access Granted ✅";
+  } else {
+    document.getElementById("result").innerText = "Access Denied ❌";
+  }
 
 });
 </script>
-
-</body>
-</html>
