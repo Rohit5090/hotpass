@@ -1,6 +1,6 @@
-const { providers } = require("near-api-js");
+import { providers } from "near-api-js";
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -21,13 +21,13 @@ module.exports = async (req, res) => {
       "testnet"
     );
 
-    if (result && result.status && result.status.SuccessValue !== undefined) {
-      return res.json({ success: true, access: "granted" });
-    } else {
-      return res.json({ success: false });
+    if (result?.status?.SuccessValue !== undefined) {
+      return res.status(200).json({ success: true, access: "granted" });
     }
+
+    return res.status(200).json({ success: false });
 
   } catch (error) {
     return res.status(500).json({ error: "Verification failed" });
   }
-};
+}
