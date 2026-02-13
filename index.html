@@ -1,51 +1,67 @@
-import { providers } from "near-api-js";
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>HOTPass</title>
+</head>
+<body>
 
-export default async function handler(req, res) {
+  <h1>HOTPass</h1>
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  <input 
+    type="text" 
+    id="txhash" 
+    placeholder="Enter Transaction Hash"
+  />
 
-  const { transactionHash, accountId } = req.body;
+  <input 
+    type="text" 
+    id="accountId" 
+    placeholder="Enter Account ID (example: demo.testnet)"
+  />
 
-  if (!transactionHash) {
-    return res.status(400).json({
-      error: "transactionHash required"
+  <button id="payBtn">Pay With HOT</button>
+
+  <p id="result"></p>
+
+  <script>
+    document.getElementById("payBtn").addEventListener("click", async function () {
+
+      const hash = document.getElementById("txhash").value.trim();
+      const accountId = document.getElementById("accountId").value.trim();
+
+      if (!hash || !accountId) {
+        document.getElementById("result").innerText = "Please enter both fields.";
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            transactionHash: hash,
+            accountId: accountId
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById("result").innerText = "Access Granted ✅";
+        } else {
+          document.getElementById("result").innerText = "Access Denied ❌";
+        }
+
+      } catch (error) {
+        console.error(error);
+        document.getElementById("result").innerText = "Server Error ❌";
+      }
+
     });
-  }
+  </script>
 
-  try {
-    const provider = new providers.JsonRpcProvider({
-      url: "https://rpc.mainnet.near.org"
-    });
-
-    // Agar accountId diya hai to use karo
-    // Warna transaction se signer extract karenge
-    let signer = accountId;
-
-    if (!signer) {
-      const tx = await provider.txStatus(transactionHash, "near");
-      signer = tx?.transaction?.signer_id;
-    }
-
-    const result = await provider.txStatus(transactionHash, signer);
-
-    if (result?.status && typeof result.status.SuccessValue === "string") {
-      return res.status(200).json({
-        success: true,
-        access: "granted"
-      });
-    }
-
-    return res.status(200).json({
-      success: false,
-      message: "Transaction failed"
-    });
-
-  } catch (error) {
-    return res.status(200).json({
-      success: false,
-      message: "Verification failed"
-    });
-  }
-}
+</body>
+</html>
