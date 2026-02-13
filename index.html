@@ -1,26 +1,67 @@
-<script>
-document.getElementById("payBtn").addEventListener("click", async function() {
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>HOTPass</title>
+</head>
+<body>
 
-  const hash = document.getElementById("txHash").value;
+  <h1>HOTPass</h1>
 
-  const response = await fetch("/api/verify", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      transactionHash: hash,
-      accountId: "testnet"
-    })
-  });
+  <input 
+    type="text" 
+    id="txhash" 
+    placeholder="Enter Transaction Hash"
+  />
 
-  const data = await response.json();
+  <input 
+    type="text" 
+    id="accountId" 
+    placeholder="Enter Account ID (example: demo.testnet)"
+  />
 
-  if (data.success) {
-    document.getElementById("result").innerText = "Access Granted ✅";
-  } else {
-    document.getElementById("result").innerText = "Access Denied ❌";
-  }
+  <button id="payBtn">Pay With HOT</button>
 
-});
-</script>
+  <p id="result"></p>
+
+  <script>
+    document.getElementById("payBtn").addEventListener("click", async function () {
+
+      const hash = document.getElementById("txhash").value.trim();
+      const accountId = document.getElementById("accountId").value.trim();
+
+      if (!hash || !accountId) {
+        document.getElementById("result").innerText = "Please enter both fields.";
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            transactionHash: hash,
+            accountId: accountId
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById("result").innerText = "Access Granted ✅";
+        } else {
+          document.getElementById("result").innerText = "Access Denied ❌";
+        }
+
+      } catch (error) {
+        console.error(error);
+        document.getElementById("result").innerText = "Server Error ❌";
+      }
+
+    });
+  </script>
+
+</body>
+</html>
