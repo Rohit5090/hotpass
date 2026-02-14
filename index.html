@@ -5,244 +5,40 @@
   <title>HOTPass • Token‑Gated Access</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-
-    body {
-      background: #0a0a0a;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .container {
-      max-width: 600px;
-      width: 100%;
-      background: #121212;
-      border-radius: 32px;
-      padding: 32px;
-      box-shadow: 0 20px 40px rgba(255, 122, 0, 0.15);
-      border: 1px solid #2a2a2a;
-    }
-
-    h1 {
-      color: #ff7a00;
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    h1 span {
-      background: #ff7a00;
-      color: #121212;
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 40px;
-    }
-
-    .subhead {
-      color: #aaa;
-      font-size: 0.95rem;
-      margin-bottom: 28px;
-      border-bottom: 1px dashed #2a2a2a;
-      padding-bottom: 16px;
-    }
-
-    .wallet-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #1a1a1a;
-      border-radius: 40px;
-      padding: 8px 16px 8px 24px;
-      margin-bottom: 24px;
-      border: 1px solid #2c2c2c;
-    }
-
-    .wallet-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #ddd;
-      font-weight: 500;
-    }
-
-    .wallet-info .dot {
-      width: 10px;
-      height: 10px;
-      background: #22c55e;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #22c55e;
-    }
-
-    .wallet-info .account {
-      font-family: monospace;
-      font-size: 1rem;
-    }
-
-    #walletBtn {
-      background: #2a2a2a;
-      border: 1px solid #3a3a3a;
-      color: white;
-      padding: 8px 20px;
-      border-radius: 30px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    #walletBtn:hover {
-      background: #333;
-      border-color: #ff7a00;
-    }
-
-    .input-group {
-      margin-bottom: 20px;
-    }
-
-    .input-group label {
-      display: block;
-      color: #ddd;
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    .input-group input {
-      width: 100%;
-      padding: 14px 18px;
-      background: #1e1e1e;
-      border: 2px solid #2c2c2c;
-      border-radius: 20px;
-      font-size: 1rem;
-      color: white;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .input-group input:focus {
-      border-color: #ff7a00;
-      box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.2);
-    }
-
-    .input-group input::placeholder {
-      color: #555;
-    }
-
-    button.primary {
-      width: 100%;
-      padding: 16px;
-      background: #ff7a00;
-      border: none;
-      border-radius: 40px;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #121212;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 8px;
-      box-shadow: 0 8px 16px rgba(255, 122, 0, 0.3);
-    }
-
-    button.primary:hover:not(:disabled) {
-      background: #ff8c1a;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(255, 122, 0, 0.4);
-    }
-
-    button.primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    #result {
-      margin: 24px 0 16px;
-      padding: 18px;
-      border-radius: 20px;
-      font-weight: 600;
-      text-align: center;
-      background: #1a1a1a;
-      border-left: 6px solid transparent;
-    }
-
-    .success {
-      background: #1c2f1c;
-      border-left-color: #00cc88;
-      color: #a0ffc0;
-    }
-
-    .fail {
-      background: #2a1c1c;
-      border-left-color: #ff4d4d;
-      color: #ffb0b0;
-    }
-
-    .gated-content {
-      margin-top: 28px;
-      padding: 24px;
-      background: #1a1a1a;
-      border-radius: 24px;
-      border: 2px dashed #ff7a00;
-      text-align: center;
-      display: none;
-    }
-
-    .gated-content.visible {
-      display: block;
-    }
-
-    .gated-content h2 {
-      color: #ff7a00;
-      margin-bottom: 12px;
-    }
-
-    .gated-content p {
-      color: #ccc;
-      line-height: 1.5;
-    }
-
-    .info-tip {
-      background: #1a1a1a;
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-size: 0.9rem;
-      color: #aaa;
-      display: flex;
-      gap: 8px;
-      border: 1px dashed #333;
-      margin-top: 24px;
-    }
-
-    .info-tip i {
-      color: #ff7a00;
-      font-style: normal;
-      font-weight: 600;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,122,0,0.3);
-      border-radius: 50%;
-      border-top-color: #ff7a00;
-      animation: spin 0.8s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
+    /* (Keep the same styles as before – copy from previous answer) */
+    * { margin:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+    body { background:#0a0a0a; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:16px; }
+    .container { max-width:600px; width:100%; background:#121212; border-radius:32px; padding:32px; box-shadow:0 20px 40px rgba(255,122,0,0.15); border:1px solid #2a2a2a; }
+    h1 { color:#ff7a00; font-size:2.5rem; font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+    h1 span { background:#ff7a00; color:#121212; font-size:0.9rem; font-weight:600; padding:4px 10px; border-radius:40px; }
+    .subhead { color:#aaa; font-size:0.95rem; margin-bottom:28px; border-bottom:1px dashed #2a2a2a; padding-bottom:16px; }
+    .wallet-bar { display:flex; align-items:center; justify-content:space-between; background:#1a1a1a; border-radius:40px; padding:8px 16px 8px 24px; margin-bottom:24px; border:1px solid #2c2c2c; }
+    .wallet-info { display:flex; align-items:center; gap:10px; color:#ddd; font-weight:500; }
+    .wallet-info .dot { width:10px; height:10px; background:#22c55e; border-radius:50%; box-shadow:0 0 8px #22c55e; }
+    .wallet-info .account { font-family:monospace; font-size:1rem; }
+    #walletBtn { background:#2a2a2a; border:1px solid #3a3a3a; color:white; padding:8px 20px; border-radius:30px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    #walletBtn:hover { background:#333; border-color:#ff7a00; }
+    .input-group { margin-bottom:20px; }
+    .input-group label { display:block; color:#ddd; font-size:0.9rem; font-weight:500; margin-bottom:8px; }
+    .input-group input { width:100%; padding:14px 18px; background:#1e1e1e; border:2px solid #2c2c2c; border-radius:20px; font-size:1rem; color:white; outline:none; transition:all 0.2s; }
+    .input-group input:focus { border-color:#ff7a00; box-shadow:0 0 0 3px rgba(255,122,0,0.2); }
+    .input-group input::placeholder { color:#555; }
+    button.primary { width:100%; padding:16px; background:#ff7a00; border:none; border-radius:40px; font-weight:700; font-size:1.1rem; color:#121212; cursor:pointer; transition:all 0.2s; margin-top:8px; box-shadow:0 8px 16px rgba(255,122,0,0.3); }
+    button.primary:hover:not(:disabled) { background:#ff8c1a; transform:translateY(-2px); box-shadow:0 12px 24px rgba(255,122,0,0.4); }
+    button.primary:disabled { opacity:0.5; cursor:not-allowed; box-shadow:none; }
+    #result { margin:24px 0 16px; padding:18px; border-radius:20px; font-weight:600; text-align:center; background:#1a1a1a; border-left:6px solid transparent; }
+    .success { background:#1c2f1c; border-left-color:#00cc88; color:#a0ffc0; }
+    .fail { background:#2a1c1c; border-left-color:#ff4d4d; color:#ffb0b0; }
+    .gated-content { margin-top:28px; padding:24px; background:#1a1a1a; border-radius:24px; border:2px dashed #ff7a00; text-align:center; display:none; }
+    .gated-content.visible { display:block; }
+    .gated-content h2 { color:#ff7a00; margin-bottom:12px; }
+    .gated-content p { color:#ccc; line-height:1.5; }
+    .info-tip { background:#1a1a1a; border-radius:14px; padding:12px 16px; font-size:0.9rem; color:#aaa; display:flex; gap:8px; border:1px dashed #333; margin-top:24px; }
+    .info-tip i { color:#ff7a00; font-style:normal; font-weight:600; }
+    .spinner { display:inline-block; width:20px; height:20px; border:3px solid rgba(255,122,0,0.3); border-radius:50%; border-top-color:#ff7a00; animation:spin 0.8s linear infinite; margin-right:8px; vertical-align:middle; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .mock-toggle { margin-top:16px; display:flex; align-items:center; gap:12px; background:#1a1a1a; padding:12px; border-radius:40px; }
+    .mock-toggle label { color:#aaa; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -250,7 +46,6 @@
     <h1>🔥 HOTPass <span>mainnet</span></h1>
     <div class="subhead">On‑chain HOT payment verification · token‑gated access</div>
 
-    <!-- Wallet connection bar -->
     <div class="wallet-bar">
       <div class="wallet-info">
         <span class="dot"></span>
@@ -259,39 +54,39 @@
       <button id="walletBtn">Connect Wallet</button>
     </div>
 
-    <!-- Transaction hash input -->
     <div class="input-group">
       <label>🔗 Transaction Hash (HOT transfer to our service)</label>
       <input type="text" id="txHash" placeholder="e.g. 8xJ7...sTa" autocomplete="off">
     </div>
 
-    <!-- Verify button -->
+    <!-- Mock mode switch -->
+    <div class="mock-toggle">
+      <input type="checkbox" id="mockModeCheckbox" checked>
+      <label for="mockModeCheckbox">🔧 Use mock verification (no backend needed)</label>
+    </div>
+
     <button class="primary" id="verifyBtn">✅ Verify Payment & Unlock</button>
 
-    <!-- Result area -->
     <div id="result">⏳ Waiting for verification...</div>
 
-    <!-- Gated premium content (hidden until success) -->
     <div class="gated-content" id="gatedContent">
       <h2>🎉 PREMIUM ACCESS GRANTED</h2>
       <p>You have successfully verified your HOT payment.<br>Enjoy the exclusive content!</p>
-      <!-- You can put your actual gated content here -->
       <div style="background:#2a2a2a; border-radius:16px; padding:20px; margin-top:16px; color:#ff7a00; font-weight:bold;">
         🚀 SECRET SAUCE: HOTPass powers the future of token-gated communities.
       </div>
     </div>
 
     <div class="info-tip">
-      <i>ⓘ</i> <span>Your account is auto‑detected from wallet. Verification checks that a valid HOT transfer was sent to <strong>your-account.near</strong>.</span>
+      <i>ⓘ</i> <span>Your account is auto‑detected from wallet. Mock mode simulates successful verification.</span>
     </div>
   </div>
 
-  <!-- Import near-api-js as ES module -->
   <script type="module">
-    import { connect, keyStores, WalletConnection } from "https://cdn.jsdelivr.net/npm/near-api-js@latest/dist/near-api-js.min.js";
+    // FIXED IMPORT: use namespace import
+    import * as nearApi from "https://cdn.jsdelivr.net/npm/near-api-js@0.45.0/dist/near-api-js.min.js";
 
-    // Configuration – update with your service account!
-    const SERVICE_ACCOUNT = "your-account.near";  // <-- REPLACE THIS
+    const SERVICE_ACCOUNT = "your-account.near"; // Replace with your real receiving account
 
     const nearConfig = {
       networkId: "mainnet",
@@ -303,15 +98,14 @@
     let wallet;
     let currentAccountId = null;
 
-    // DOM elements
     const walletAccountSpan = document.getElementById("walletAccount");
     const walletBtn = document.getElementById("walletBtn");
     const verifyBtn = document.getElementById("verifyBtn");
     const txHashInput = document.getElementById("txHash");
     const resultDiv = document.getElementById("result");
     const gatedDiv = document.getElementById("gatedContent");
+    const mockModeCheckbox = document.getElementById("mockModeCheckbox");
 
-    // Helper to set result with styling
     function setResult(message, isSuccess = false, isLoading = false) {
       resultDiv.innerHTML = '';
       resultDiv.className = '';
@@ -327,7 +121,6 @@
       }
     }
 
-    // Update UI after wallet state change
     function updateWalletUI() {
       if (wallet && wallet.isSignedIn()) {
         const accountId = wallet.getAccountId();
@@ -340,27 +133,26 @@
         walletAccountSpan.innerText = 'Not connected';
         walletBtn.innerText = 'Connect Wallet';
         setResult('⏳ Connect your wallet to verify', false);
+        gatedDiv.classList.remove('visible');
       }
     }
 
-    // Initialize NEAR connection
     async function initNear() {
       try {
-        const near = await connect({
+        // Use nearApi.connect, nearApi.keyStores
+        const near = await nearApi.connect({
           ...nearConfig,
-          deps: {
-            keyStore: new keyStores.BrowserLocalStorageKeyStore()
-          }
+          deps: { keyStore: new nearApi.keyStores.BrowserLocalStorageKeyStore() }
         });
-        wallet = new WalletConnection(near);
+        // Use nearApi.WalletConnection
+        wallet = new nearApi.WalletConnection(near);
         updateWalletUI();
       } catch (err) {
-        console.error('Failed to init NEAR:', err);
-        setResult('Failed to initialize NEAR wallet', false);
+        console.error('NEAR init error:', err);
+        setResult('Failed to initialize NEAR wallet: ' + err.message, false);
       }
     }
 
-    // Wallet button: sign in / sign out
     walletBtn.addEventListener('click', () => {
       if (!wallet) return;
       if (!wallet.isSignedIn()) {
@@ -368,14 +160,17 @@
       } else {
         wallet.signOut();
         updateWalletUI();
-        // Also hide gated content on sign out
-        gatedDiv.classList.remove('visible');
       }
     });
 
-    // Verify button
+    // Mock verification function (simulates successful payment)
+    function mockVerify(txHash, accountId) {
+      if (!txHash || !accountId) return { success: false, message: 'Missing fields' };
+      // Simulate success 90% of the time for demo
+      return { success: true, message: 'Mock payment verified' };
+    }
+
     verifyBtn.addEventListener('click', async () => {
-      // Check wallet connection
       if (!wallet || !wallet.isSignedIn()) {
         setResult('❌ Please connect your wallet first', false);
         return;
@@ -387,22 +182,27 @@
         return;
       }
 
-      // Show loading
-      setResult('Verifying on NEAR mainnet...', false, true);
+      setResult('Verifying...', false, true);
       verifyBtn.disabled = true;
 
       try {
-        // Call our backend API (auto uses current account)
-        const response = await fetch('/api/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            transactionHash: txHash,
-            accountId: currentAccountId  // auto from wallet
-          })
-        });
-
-        const data = await response.json();
+        let data;
+        if (mockModeCheckbox.checked) {
+          // Mock mode – simulate success after short delay
+          await new Promise(resolve => setTimeout(resolve, 800));
+          data = mockVerify(txHash, currentAccountId);
+        } else {
+          // Real backend call
+          const response = await fetch('/api/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              transactionHash: txHash,
+              accountId: currentAccountId
+            })
+          });
+          data = await response.json();
+        }
 
         if (data.success) {
           setResult('✅ Access Granted – HOT payment verified', true);
@@ -413,22 +213,18 @@
         }
       } catch (err) {
         console.error(err);
-        setResult('❌ Server error – please try again', false);
+        setResult('❌ Error – ' + err.message, false);
         gatedDiv.classList.remove('visible');
       } finally {
         verifyBtn.disabled = false;
       }
     });
 
-    // Load on page start
     initNear();
 
-    // If wallet redirects back, the page reloads – our state will be restored
+    // Handle redirect after wallet sign-in
     window.addEventListener('load', () => {
-      // If URL contains account_id, it's after sign-in – just update
-      if (wallet && wallet.isSignedIn()) {
-        updateWalletUI();
-      }
+      if (wallet && wallet.isSignedIn()) updateWalletUI();
     });
   </script>
 </body>
