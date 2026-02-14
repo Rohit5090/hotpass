@@ -1,67 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>HOTPass</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding-top: 80px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 30px;
+      background: #1c1c1c;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 115, 0, 0.2);
+    }
+
+    h1 {
+      color: #ff7a00;
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 25px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .primary {
+      background: #ff7a00;
+      color: white;
+    }
+
+    .secondary {
+      background: #333;
+      color: white;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: #00ff99;
+    }
+
+    .fail {
+      color: #ff4444;
+    }
+  </style>
 </head>
+
 <body>
 
-  <h1>HOTPass</h1>
+<div class="container">
+  <h1>🔥 HOTPass</h1>
+  <p>On-chain HOT Payment Verification</p>
 
-  <input 
-    type="text" 
-    id="txhash" 
-    placeholder="Enter Transaction Hash"
-  />
+  <input type="text" id="txHash" placeholder="Enter Transaction Hash">
 
-  <input 
-    type="text" 
-    id="accountId" 
-    placeholder="Enter Account ID (example: demo.testnet)"
-  />
+  <input type="text" id="accountId" placeholder="Account ID (.near / .tg optional)">
 
-  <button id="payBtn">Pay With HOT</button>
+  <button class="primary" id="verifyBtn">Verify Payment</button>
+  <button class="secondary" id="walletBtn">Connect Wallet</button>
 
   <p id="result"></p>
+</div>
 
-  <script>
-    document.getElementById("payBtn").addEventListener("click", async function () {
+<script>
+  document.getElementById("verifyBtn").addEventListener("click", async function() {
 
-      const hash = document.getElementById("txhash").value.trim();
-      const accountId = document.getElementById("accountId").value.trim();
+    const hash = document.getElementById("txHash").value.trim();
+    const accountId = document.getElementById("accountId").value.trim();
 
-      if (!hash || !accountId) {
-        document.getElementById("result").innerText = "Please enter both fields.";
-        return;
+    if (!hash) {
+      document.getElementById("result").innerText = "Enter Transaction Hash";
+      document.getElementById("result").className = "fail";
+      return;
+    }
+
+    document.getElementById("result").innerText = "Verifying...";
+    document.getElementById("result").className = "";
+
+    try {
+      const response = await fetch("/api/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          transactionHash: hash,
+          accountId: accountId
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        document.getElementById("result").innerText = "Access Granted ✅";
+        document.getElementById("result").className = "success";
+      } else {
+        document.getElementById("result").innerText = "Access Denied ❌";
+        document.getElementById("result").className = "fail";
       }
 
-      try {
-        const response = await fetch("/api/verify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            transactionHash: hash,
-            accountId: accountId
-          })
-        });
+    } catch (err) {
+      document.getElementById("result").innerText = "Server Error ❌";
+      document.getElementById("result").className = "fail";
+    }
 
-        const data = await response.json();
+  });
 
-        if (data.success) {
-          document.getElementById("result").innerText = "Access Granted ✅";
-        } else {
-          document.getElementById("result").innerText = "Access Denied ❌";
-        }
-
-      } catch (error) {
-        console.error(error);
-        document.getElementById("result").innerText = "Server Error ❌";
-      }
-
-    });
-  </script>
+  document.getElementById("walletBtn").addEventListener("click", function() {
+    alert("Wallet integration coming soon. For demo, paste your transaction hash.");
+  });
+</script>
 
 </body>
 </html>
+
+
+
+Correct it thoroughly, thoroughly, and thoroughly. Correct any errors so that it can function properly.
